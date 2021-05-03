@@ -74,7 +74,6 @@ class Main extends AbstractImage
         $vhostConfig = $this->fileHelper->read('var/Docker/main/000-default.conf');
         $vhostConfig = str_replace('$DOCUMENT_ROOT', $documentRoot, $vhostConfig);
 
-        $this->add('/etc/apache2/sites-available/000-default.conf', $vhostConfig);
         $this->add('/etc/apache2/sites-enabled/000-default.conf', $vhostConfig);
 
         // $GATEWAY
@@ -103,7 +102,7 @@ class Main extends AbstractImage
         }
 
         $this->addFile("var/Docker/mysql/my.cnf","/root/.my.cnf");
-        $this->addFile("var/Docker/mysql/my.cnf","/var/www/.my.cnf");
+        $this->run("cp /root/.my.cnf /var/www/.my.cnf");
         $this->run("chown www-data:www-data /var/www/.my.cnf");
 
         $this->run("curl -O https://getcomposer.org/composer-stable.phar");
