@@ -2,10 +2,6 @@
 
 Magedev is a shell tool for local Magento development. It helps you to get a project up and running much easier by automating cumbersome tasks. Escpecially, Magento2 is not easy to setup and install all required dependencies.
 
-## Experimental software
-
-**Beware: this is experimental software still in heavy development. There might still be breaking changes. Use it on your own risk.**
-
 ## Requirements
 
 * Linux
@@ -24,7 +20,7 @@ Or with wget:
 
 Magedev is a command line tool. Download latest version with download script or grab it from the `releases` folder.
 
-    curl -sSL https://raw.githubusercontent.com/teamneusta/php-cli-magedev/master/download-latest.sh | sh
+    curl -sSL https://raw.githubusercontent.com/Wamoco/magedev/master/download-latest.sh | sh
 
 Make sure magedev lies in your `PATH`, move it somewhere e.g. `~/bin`:
 
@@ -57,5 +53,17 @@ EOL
     curl magento2.local
 
 
+## Team
+
+Agency for Magento and Web Development based in Bremen, Germany.
+
+Feel free to contact us: <a href="mailto:info@wamoco.de?subject=Watchimon">info@wamoco.de</a>
+
+[wamoco.de](https://wamoco.de)
+
 ## License
-The MIT License (MIT). Please see [License File](LICENSE) for more information.
+
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
+
+- **[MIT license](http://opensource.org/licenses/mit-license.php)**
+- Copyright 2021 © <a href="https://wamoco.de" target="_blank">Wamoco</a>.

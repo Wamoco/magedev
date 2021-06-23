@@ -42,7 +42,7 @@ LOGO;
      */
     public function __construct(PluginManager $pluginManager)
     {
-        parent::__construct('magedev', '@package_version@');
+        parent::__construct('magedev', '1.5.1');
         $this->pluginManager = $pluginManager;
     }
 
