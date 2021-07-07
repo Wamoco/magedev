@@ -127,6 +127,9 @@ class DockerService
         }
         if (array_key_exists('containers', $dockerConfig)) {
             foreach (array_unique($dockerConfig['containers']) as $containerName) {
+                if($containerName == 'Migration' && !$this->config->optionExists('is_migration')){
+                    continue;
+                }
                 $containers[] = $this->containerFactory->create($containerName);
             }
         }
