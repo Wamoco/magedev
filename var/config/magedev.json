@@ -34,7 +34,8 @@
     ],
     "links": {
       "main": ["mysql", "redis", "elasticsearch", "migration"],
-      "kibana": ["elasticsearch"]
+      "kibana": ["elasticsearch"],
+      "varnish": ["main"]
     },
     "ports": {
       "main": {
