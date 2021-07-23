@@ -306,7 +306,7 @@ class DockerService
             throw new \Exception('Cannot execute command. Expected to find container named '.$containerName);
         }
 
-        $cmd = 'docker exec --user='.$user.' -it '.$containerName.' '.$cmd;
+        $cmd = 'docker exec --user='.$user.' -it  -e COLUMNS="`tput cols`" -e LINES="`tput lines`" '.$containerName.' '.$cmd;
 
         $interactive = true;
         if (array_key_exists('interactive', $options)) {
