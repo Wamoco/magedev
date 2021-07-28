@@ -58,15 +58,16 @@ abstract class AbstractContainer
     /**
      * __construct.
      *
-     * @param \TeamNeusta\Magedev\Runtime\Config            $config
-     * @param \TeamNeusta\Magedev\Docker\Image\Factory      $imageFactory
+     * @param \TeamNeusta\Magedev\Runtime\Config $config
+     * @param \TeamNeusta\Magedev\Docker\Image\Factory $imageFactory
      * @param \TeamNeusta\Magedev\Docker\Helper\NameBuilder $nameBuilder
      */
     public function __construct(
         \TeamNeusta\Magedev\Runtime\Config $config,
         \TeamNeusta\Magedev\Docker\Image\Factory $imageFactory,
         \TeamNeusta\Magedev\Docker\Helper\NameBuilder $nameBuilder
-    ) {
+    )
+    {
         $this->config = $config;
         $this->imageFactory = $imageFactory;
         $this->nameBuilder = $nameBuilder;
@@ -97,7 +98,7 @@ abstract class AbstractContainer
     public function getBuildName()
     {
         return $this->nameBuilder->buildName(
-             $this->getName()
+            $this->getName()
         );
     }
 
@@ -121,13 +122,14 @@ abstract class AbstractContainer
 
         $config->setNetworkingConfig($networkingConfig);
         $hostConfig = new HostConfig();
+
         $hostConfig->setBinds($this->binds);
         $hostConfig->setPortBindings($this->mapPorts);
         $config->setHostConfig($hostConfig);
 
         $env = [];
         foreach ($this->config->get('env_vars') as $key => $value) {
-            $env[] = $key.'='.$value;
+            $env[] = $key . '=' . $value;
         }
 
         $config->setEnv($env);
@@ -154,9 +156,9 @@ abstract class AbstractContainer
     public function forwardPort($srcPort, $dstPort)
     {
         $hostPortBinding = new PortBinding();
-        $hostPortBinding->setHostPort((string) $dstPort);
+        $hostPortBinding->setHostPort((string)$dstPort);
         $hostPortBinding->setHostIp('0.0.0.0');
-        $this->mapPorts[$srcPort.'/tcp'] = [$hostPortBinding];
+        $this->mapPorts[$srcPort . '/tcp'] = [$hostPortBinding];
     }
 
     /**

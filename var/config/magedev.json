@@ -27,13 +27,15 @@
       "Mailcatcher",
       "Main",
       "Mysql",
+      "Migration",
       "Redis",
       "Varnish",
       "Kibana"
     ],
     "links": {
-      "main": ["mysql", "redis", "elasticsearch"],
-      "kibana": ["elasticsearch"]
+      "main": ["mysql", "redis", "elasticsearch", "migration"],
+      "kibana": ["elasticsearch"],
+      "varnish": ["main"]
     },
     "ports": {
       "main": {
@@ -42,6 +44,9 @@
       },
       "mysql": {
         "3306": "3306"
+      },
+      "migration": {
+        "3306": "3307"
       },
       "elasticsearch": {
         "9200": "9200",
