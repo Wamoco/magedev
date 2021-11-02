@@ -62,6 +62,7 @@ class Php7 extends AbstractImage
         $this->run("yes '' | pecl install imagick");
 
         $this->run('a2enmod rewrite');
+        $this->run('a2enmod ssl');
 
         $this->run('mkdir /var/www/.composer');
         $this->run('mkdir /var/www/.ssh');

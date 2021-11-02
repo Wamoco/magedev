@@ -67,14 +67,20 @@ class Main extends AbstractImage
         $uid = getmyuid();
         $this->run("usermod -u " . $uid . " www-data");
 
+        $this->addFile("var/Docker/main/certs/apache-selfsigned.crt", "/etc/apache2/apache-selfsigned.crt");
+        $this->addFile("var/Docker/main/certs/apache-selfsigned.key", "/etc/apache2/apache-selfsigned.key");
+
         // TODO: have something like a simple template engine to replace vars
         // like DOCUMENT_ROOT AND $GATEWAY ?
 
         $documentRoot = $this->config->get('document_root');
         $vhostConfig = $this->fileHelper->read('var/Docker/main/000-default.conf');
         $vhostConfig = str_replace('$DOCUMENT_ROOT', $documentRoot, $vhostConfig);
-
         $this->add('/etc/apache2/sites-enabled/000-default.conf', $vhostConfig);
+
+        $vhostConfig = $this->fileHelper->read('var/Docker/main/000-ssl.conf');
+        $vhostConfig = str_replace('$DOCUMENT_ROOT', $documentRoot, $vhostConfig);
+        $this->add('/etc/apache2/sites-enabled/000-ssl.conf', $vhostConfig);
 
         // $GATEWAY
         $gatewayIp = $this->config->get('gateway');
@@ -116,6 +122,9 @@ class Main extends AbstractImage
 
         $this->addFile("var/Docker/vendor/mini_sendmail-1.3.9/mini_sendmail", "/usr/bin/mini_sendmail");
         $this->run("chmod +x /usr/bin/mini_sendmail");
+
+        $this->run('a2enmod rewrite');
+        $this->run('a2enmod ssl');
 
         // expose grunt port
         $this->expose("35729");
