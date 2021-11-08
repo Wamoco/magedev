@@ -79,17 +79,29 @@ class ImportCommand extends AbstractCommand
     {
         if ($this->config->optionExists('dump_file')) {
             $dumpFile = $this->config->get('dump_file');
-            $sourceFolder = $this->config->get('source_folder');
 
-            // escape whitespaces for command
-            $dumpFile = str_replace(' ', '\\ ', $dumpFile);
-
-            if (!file_exists(getcwd().$dumpFile)) {
-                // copy it to project folder
-                $this->shellService->execute('cp '.$dumpFile.' '.$sourceFolder);
-                $this->dockerService->execute('mysql -uroot -proot < '.basename($dumpFile));
+            if ($this->isHttp($dumpFile)) {
+                $url      = $dumpFile;
+                $dumpFile = basename($url);
+                $this->shellService->execute('curl ' . $url . ' -o ' . $dumpFile);
             }
+
+            $this->importFile($dumpFile);
         }
+
         parent::execute($input, $output);
+    }
+
+    protected function isHttp($path)
+    {
+        return substr($path, 0, 4) === "http";
+    }
+
+    protected function importFile($file)
+    {
+        if (!file_exists($file)) {
+            throw new \Exception("File not found: " . $file);
+        }
+        $this->shellService->execute('mysql -h 0.0.0.0 -u root -proot magento < ' . $file);
     }
 }

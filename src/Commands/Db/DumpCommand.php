@@ -14,7 +14,7 @@ namespace TeamNeusta\Magedev\Commands\Db;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TeamNeusta\Magedev\Commands\AbstractCommand;
-use TeamNeusta\Magedev\Services\DockerService;
+use TeamNeusta\Magedev\Services\ShellService;
 
 /**
  * Class: DumpCommand.
@@ -24,19 +24,22 @@ use TeamNeusta\Magedev\Services\DockerService;
 class DumpCommand extends AbstractCommand
 {
     /**
-     * @var \TeamNeusta\Magedev\Services\DockerService
+     * @var \TeamNeusta\Magedev\Services\ShellService
      */
-    protected $dockerService;
+    protected $shellService;
+
 
     /**
      * __construct.
      *
-     * @param DockerService $dockerService
+     * @param ShellService $shellService
      */
-    public function __construct(DockerService $dockerService)
+    public function __construct(
+        ShellService $shellService
+    )
     {
         parent::__construct();
-        $this->dockerService = $dockerService;
+        $this->shellService = $shellService;
     }
 
     /**
@@ -57,9 +60,8 @@ class DumpCommand extends AbstractCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $dumpFile = 'dump.sql'; //TODO: make this configurable
-        $dbName = 'magento';
 
-        $this->dockerService->execute('mysqldump -u root -proot '.$dbName.' > '.$dumpFile, ['user' => 'root']);
+        $this->shellService->execute('mysqldump --column-statistics=0 -h 0.0.0.0 -u root -proot magento > ' . $dumpFile);
 
         parent::execute($input, $output);
     }

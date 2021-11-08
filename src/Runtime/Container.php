@@ -113,6 +113,9 @@ $c['commands'] = function ($c) {
     return [
         new \Stecman\Component\Symfony\Console\BashCompletion\CompletionCommand(),
 
+        new \TeamNeusta\Magedev\Commands\Project\NameCommand($c['runtime.config']),
+
+
         // Db
         new \TeamNeusta\Magedev\Commands\Db\CleanupCommand(
             $c['runtime.config'],
@@ -120,12 +123,20 @@ $c['commands'] = function ($c) {
             $c['services.shell'],
             $c['services.docker']
         ),
-        new \TeamNeusta\Magedev\Commands\Db\DumpCommand($c['services.docker']),
+        new \TeamNeusta\Magedev\Commands\Db\DumpCommand($c['services.shell']),
         new \TeamNeusta\Magedev\Commands\Db\ImportCommand(
             $c['runtime.config'],
             $c['services.shell'],
             $c['services.docker']
         ),
+
+        new \TeamNeusta\Magedev\Commands\Db\ConfigSyncCommand(
+            $c['runtime.config'],
+            $c['runtime.helper.filehelper'],
+            $c['services.docker']
+        ),
+
+        new \TeamNeusta\Magedev\Commands\Db\SyncCommand(),
 
         /* // Media */
         new \TeamNeusta\Magedev\Commands\Media\ImportCommand($c['runtime.config'], $c['services.shell']),

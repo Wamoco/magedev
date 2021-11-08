@@ -38,7 +38,7 @@ class MysqlCommand extends Base
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->dockerService->execute('mysql');
+        $this->dockerService->execute('mysql -h mysql -u magento -pmagento magento');
         parent::execute($input, $output);
     }
 }

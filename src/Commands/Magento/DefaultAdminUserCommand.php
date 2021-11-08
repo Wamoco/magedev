@@ -99,13 +99,7 @@ class DefaultAdminUserCommand extends AbstractCommand
      */
     public function userExists($username)
     {
-        $result = $this->dockerService->execute(
-            "mysql --execute \"select * from admin_user where username = '".$username."';\"",
-            [
-                'interactive' => false,
-            ]
-        );
-
-        return $result != '';
+        $result = $this->magerunHelper->magerunCommand('admin:user:list');
+        return (strpos($result, $username) !== false);
     }
 }
