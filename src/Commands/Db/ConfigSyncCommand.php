@@ -74,11 +74,20 @@ class ConfigSyncCommand extends AbstractCommand
         $sourceFolder = $this->config->get('source_folder');
         $this->checkPrerequisites();
 
-        if (!$this->fileHelper->fileExists($sourceFolder . '/../etc/config/develop.yml')) {
-            throw new \Exception('etc/config/develop.yml not found');
+        $paths = [
+            '/../etc/config/develop.yml',
+            'app/etc/conf/develop.yml'
+        ];
+
+        foreach ($paths as $path) {
+            $fullpath = $sourceFolder . $path;
+            if ($this->fileHelper->fileExists($fullpath)) {
+                $this->dockerService->execute(sprintf("vendor/bin/mageconfigsync load %s --env develop", $path));
+                return 0;
+            }
         }
 
-        $this->dockerService->execute('vendor/bin/mageconfigsync load ../etc/config/develop.yml --env develop');
+        throw new \Exception(sprintf('no config file found not found, search in %s', implode(';', $paths)));
     }
 
     /**
