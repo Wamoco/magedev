@@ -59,6 +59,11 @@ class MagerunHelper
     public function isMagerunInstalled()
     {
         $sourceFolder = $this->config->get('source_folder');
+
+        if (strrpos('/', $sourceFolder) !== true) {
+            $sourceFolder .= '/';
+        }
+
         if ($this->config->getMagentoVersion() == '1') {
             return $this->fileHelper->fileExists($sourceFolder.'shell/magerun');
         }
