@@ -1,17 +1,17 @@
-FROM php:8.1-apache
+FROM php:8.2-apache
 
 RUN apt-get update
 RUN apt-get install -y gnupg2
 
 RUN echo "deb http://ftp.de.debian.org/debian buster main" > /etc/apt/sources.list.d/zlibdev.list
-RUN echo "deb http://repo.mysql.com/apt/debian/ buster mysql-8.0" > /etc/apt/sources.list.d/mysql.list
-RUN curl -s http://repo.mysql.com/RPM-GPG-KEY-mysql-2022 | apt-key add -
+# RUN echo "deb http://repo.mysql.com/apt/debian/ buster mysql-8.0" > /etc/apt/sources.list.d/mysql.list
+# RUN curl -s http://repo.mysql.com/RPM-GPG-KEY-mysql-2022 | apt-key add -
 
 RUN apt-get update
 
 RUN apt-get install -y npm
 RUN apt-get install -y git
-RUN apt-get install -y mysql-community-client
+RUN apt-get install -y default-mysql-client
 
 RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev
 RUN apt-get install -y libicu-dev
@@ -76,4 +76,5 @@ RUN chmod 777 /usr/bin/composer-1
 RUN chmod +x /usr/bin/composer-1
 
 RUN curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
-RUN export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")" [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+RUN export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
