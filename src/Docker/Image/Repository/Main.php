@@ -126,6 +126,8 @@ class Main extends AbstractImage
         $this->run('a2enmod rewrite');
         $this->run('a2enmod ssl');
 
+        $this->run('docker-php-ext-enable imagick');
+
         // expose grunt port
         $this->expose("35729");
 
