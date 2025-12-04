@@ -14,11 +14,11 @@ namespace TeamNeusta\Magedev\Docker\Container\Repository;
 use TeamNeusta\Magedev\Docker\Container\AbstractContainer;
 
 /**
- * Class: ElasticSearch.
+ * Class: Search.
  *
  * @see AbstractContainer
  */
-class ElasticSearch extends AbstractContainer
+class Search extends AbstractContainer
 {
     /**
      * getName.
@@ -33,6 +33,10 @@ class ElasticSearch extends AbstractContainer
      */
     public function getImage()
     {
+        if ($this->isOpenSearch()) {
+            return $this->imageFactory->create('OpenSearch');
+        }
+
         return $this->imageFactory->create('Elasticsearch');
     }
 
@@ -40,10 +44,29 @@ class ElasticSearch extends AbstractContainer
     {
         $config = parent::getConfig();
         $env = $config->getEnv();
-        $env = array_merge($env, [
-            'xpack.security.enabled=false'
-        ]);
+
+        if ($this->isOpenSearch()) {
+            $env = array_merge($env, [
+                'OPENSEARCH_INITIAL_ADMIN_PASSWORD=qas1TLEy010%j',
+                'plugins.security.disabled=true',
+                'discovery.type=single-node'
+            ]);
+        } else {
+            $env = array_merge($env, [
+                'xpack.security.enabled=false',
+            ]);
+        }
         $config->setEnv($env);
         return $config;
+    }
+
+    private function isOpenSearch()
+    {
+        $searchEngine = $this->config->get('search_engine');
+        if ($searchEngine == "opensearch") {
+            return true;
+        }
+
+        return false;
     }
 }
