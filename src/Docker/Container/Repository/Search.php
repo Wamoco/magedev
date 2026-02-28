@@ -62,6 +62,9 @@ class Search extends AbstractContainer
 
     private function isOpenSearch()
     {
+        if (!$this->config->optionExists('search_engine')) {
+            return false;
+        }
         $searchEngine = $this->config->get('search_engine');
         if ($searchEngine == "opensearch") {
             return true;
