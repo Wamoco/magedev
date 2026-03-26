@@ -41,13 +41,13 @@ RUN docker-php-ext-install -j$(nproc) soap
 RUN docker-php-ext-install -j$(nproc) xsl
 RUN docker-php-ext-install -j$(nproc) zip
 RUN docker-php-ext-install -j$(nproc) sockets
+RUN docker-php-ext-install -j$(nproc) ftp
 
 RUN docker-php-ext-enable bcmath gd intl pdo_mysql simplexml soap xsl zip sockets
 
 RUN apt-get install -y dos2unix
 
-RUN pear upgrade --force
-RUN pecl upgrade
+RUN pecl channel-update pecl.php.net
 RUN pecl install xdebug
 RUN pecl install imagick
 

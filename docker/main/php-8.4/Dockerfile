@@ -41,6 +41,7 @@ RUN docker-php-ext-install -j$(nproc) soap
 RUN docker-php-ext-install -j$(nproc) xsl
 RUN docker-php-ext-install -j$(nproc) zip
 RUN docker-php-ext-install -j$(nproc) sockets
+RUN docker-php-ext-install -j$(nproc) ftp
 
 RUN docker-php-ext-enable bcmath gd intl pdo_mysql simplexml soap xsl zip sockets
 
