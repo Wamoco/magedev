@@ -105,4 +105,25 @@ class FileHelper
             unlink($path);
         }
     }
+
+    /**
+     * createDirectory.
+     *
+     * Creates a directory (including parents) if it does not exist yet. The
+     * directory is owned by the current host user, which is required for bind
+     * mounts that need to be writable by a non-root container user.
+     *
+     * @param string $path
+     * @param int    $mode
+     *
+     * @return string
+     */
+    public function createDirectory($path, $mode = 0775)
+    {
+        if (!is_dir($path)) {
+            mkdir($path, $mode, true);
+        }
+
+        return $path;
+    }
 }

@@ -134,6 +134,22 @@ class DockerService
             }
         }
 
+        // n8n is optional and only spun up when activated in magedev.json
+        // (e.g. "n8n": true). It is injected here so it works regardless of how
+        // the "containers" list is defined in the project config.
+        if ($this->config->optionExists('n8n')) {
+            $hasN8n = false;
+            foreach ($containers as $container) {
+                if ($container->getName() === 'n8n') {
+                    $hasN8n = true;
+                    break;
+                }
+            }
+            if (!$hasN8n) {
+                $containers[] = $this->containerFactory->create('N8n');
+            }
+        }
+
         if (sizeof($containers) == 0) {
             throw new \Exception('no containers found, please check your magedev.json');
         }
