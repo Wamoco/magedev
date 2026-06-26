@@ -54,6 +54,8 @@ class N8nTest extends \TeamNeusta\Magedev\Test\TestCase
             $containerConfig->getHostConfig()->getBinds()
         );
         self::assertContains('N8N_SECURE_COOKIE=false', $containerConfig->getEnv());
+        self::assertContains('NODE_FUNCTION_ALLOW_BUILTIN=fs', $containerConfig->getEnv());
+        self::assertContains('N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES=false', $containerConfig->getEnv());
     }
 
     public function testGetImage()

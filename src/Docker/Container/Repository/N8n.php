@@ -62,6 +62,14 @@ class N8n extends AbstractContainer
             'N8N_SECURE_COOKIE=false',
             // use task runners (recommended, silences the deprecation warning)
             'N8N_RUNNERS_ENABLED=true',
+            // let workflows persist files into /home/node/.n8n (== the ./.n8n-data bind
+            // mount above, the only host-visible path). n8n blocks this two ways by
+            // default: Code nodes cannot require('fs'), and the Read/Write-Files node
+            // refuses the .n8n data dir. Enabling both lets a workflow write files the
+            // host can see (e.g. the sap-mock workflow dumping received order IDocs to
+            // disk for inspection/demos).
+            'NODE_FUNCTION_ALLOW_BUILTIN=fs',
+            'N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES=false',
         ]);
         $config->setEnv($env);
 
