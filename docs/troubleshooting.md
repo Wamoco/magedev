@@ -23,6 +23,21 @@ When using `magedev grunt:watch` and exiting with `ctrl+c` the process will rema
 
 As a workaround, you may use `magedev grunt:kill` in this case, to stop the process and start again.
 
+## Reindex fails with "create-index blocked"
+
+    Catalog Search index process error during indexation process:
+    {"error":{"root_cause":[{"type":"index_create_block_exception","reason":
+    "blocked by: [FORBIDDEN/10/cluster create-index blocked (api)];"}]...
+
+Elasticsearch and OpenSearch block index creation cluster wide as soon as the
+disk fills up past the high watermark of 90%, which a dev machine reaches easily.
+Magedev therefore starts the search container with
+`cluster.routing.allocation.disk.threshold_enabled=false`. If you still see this
+error, the block is left over in the cluster state from before - release it:
+
+    curl -XPUT localhost:9200/_cluster/settings -H 'Content-Type: application/json' \
+      -d '{"persistent":{"cluster.blocks.create_index":null}}'
+
 ## Local services
 
 This setup assumes you have no services like apache or mysql running on your host. All required services will be started inside containers and default ports will be forwarded to your host machine. Thats why your start command may fail with error like this:

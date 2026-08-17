@@ -155,9 +155,10 @@ class DockerService
         }
 
         foreach ($containers as $container) {
-            // extract name for container out of classname
-            // e.g. elasticsearch, main, mysql ...
-            $name = strtolower($this->getClassName(get_class($container)));
+            // the container name is the key used in the ports and links config,
+            // e.g. elasticsearch, main, mysql ... note that it is not always the
+            // class name: the Search container is named elasticsearch.
+            $name = $container->getName();
             if (array_key_exists($name, $dockerPorts)) {
                 /* may look like: */
                 /* $portMaps = [ */
@@ -339,19 +340,4 @@ class DockerService
         }
     }
 
-    /**
-     * getClassName.
-     *
-     * @param string $classname
-     *
-     * @return string
-     */
-    private function getClassName($classname)
-    {
-        if ($pos = strrpos($classname, '\\')) {
-            return substr($classname, $pos + 1);
-        }
-
-        return $pos;
-    }
 }

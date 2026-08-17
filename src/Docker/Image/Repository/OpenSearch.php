@@ -32,6 +32,13 @@ class OpenSearch extends AbstractImage
         $this->name('opensearch');
         $this->from('opensearchproject/opensearch:'.$version);
 
+        // The opensearch image ships without the analysis plugins, unlike the
+        // elasticsearch one. Elasticsuite declares phonetic filters and icu
+        // analyzers and fails to index without them. "--batch" accepts the
+        // additional permissions the plugins ask for.
+        $this->run('bin/opensearch-plugin install --batch analysis-phonetic');
+        $this->run('bin/opensearch-plugin install --batch analysis-icu');
+
         $this->expose('9200');
         $this->expose('9300');
     }

@@ -12,6 +12,7 @@ Magedev is a tool for local Magento development. It helps you to get a project u
 # Advanced
 
 * [More on docker](docker.md)
+* [MariaDB](mariadb.md)
 * [OpenSearch](opensearch.md)
 * [n8n](n8n.md)
 * [Troubleshooting](troubleshooting.md)

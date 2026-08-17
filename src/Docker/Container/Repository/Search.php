@@ -45,6 +45,14 @@ class Search extends AbstractContainer
         $config = parent::getConfig();
         $env = $config->getEnv();
 
+        // A dev machine regularly sits above the 90% disk high watermark, which
+        // makes the node block index creation cluster wide ("FORBIDDEN/10/cluster
+        // create-index blocked") and lets every magento reindex fail. Disk based
+        // allocation decisions are pointless for a single node dev container.
+        $env = array_merge($env, [
+            'cluster.routing.allocation.disk.threshold_enabled=false',
+        ]);
+
         if ($this->isOpenSearch()) {
             $env = array_merge($env, [
                 'OPENSEARCH_INITIAL_ADMIN_PASSWORD=qas1TLEy010%j',

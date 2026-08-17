@@ -16,6 +16,11 @@ use TeamNeusta\Magedev\Docker\Container\AbstractContainer;
 /**
  * Class: Mysql.
  *
+ * The database service of a project. Runs mysql by default, mariadb when
+ * "db_engine": "mariadb" is configured. The container is named "mysql" in
+ * both cases, so the hostname all other services (and magento itself) connect
+ * to stays the same.
+ *
  * @see AbstractContainer
  */
 class Mysql extends AbstractContainer
@@ -33,6 +38,10 @@ class Mysql extends AbstractContainer
      */
     public function getImage()
     {
+        if ($this->isMariadb()) {
+            return $this->imageFactory->create('Mariadb');
+        }
+
         return $this->imageFactory->create('Mysql');
     }
 
@@ -42,11 +51,41 @@ class Mysql extends AbstractContainer
     public function getConfig()
     {
         $this->setBinds([
-            $this->config->get('project_path').'/mysql:/var/lib/mysql:rw',
+            $this->getDataDir().':/var/lib/mysql:rw',
         ]);
 
         $config = parent::getConfig();
 
         return $config;
+    }
+
+    /**
+     * getDataDir.
+     *
+     * mariadb refuses to start on a data directory that was created by mysql
+     * (and the other way around), so every engine keeps its data in its own
+     * directory inside the project.
+     *
+     * @return string
+     */
+    protected function getDataDir()
+    {
+        $dataDir = $this->isMariadb() ? '/mariadb' : '/mysql';
+
+        return $this->config->get('project_path').$dataDir;
+    }
+
+    /**
+     * isMariadb.
+     *
+     * @return bool
+     */
+    private function isMariadb()
+    {
+        if (!$this->config->optionExists('db_engine')) {
+            return false;
+        }
+
+        return $this->config->get('db_engine') == 'mariadb';
     }
 }

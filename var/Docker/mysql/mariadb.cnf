@@ -1,0 +1,47 @@
+[mysqld]
+
+#################################################
+## Buffers
+
+innodb_buffer_pool_size = 1G
+innodb_log_file_size    = 512M
+
+tmp_table_size      = 200M
+max_heap_table_size = 200M
+
+open_files_limit  = 2048
+thread_cache_size = 12
+
+# Fast SQL import
+local_infile = 1
+
+#################################################
+## Misc
+
+## trade durability for speed, this is a dev machine
+innodb_flush_log_at_trx_commit = 2
+innodb_flush_method            = O_DIRECT
+
+## magento installs triggers, this is needed as soon as the binlog is enabled.
+## "loose-" keeps mariadb starting up should the option ever be removed.
+loose-log_bin_trust_function_creators = 1
+
+#################################################
+## Query log
+##
+## the data directory is bind mounted into the project, so the log can be read
+## on the host as <project>/mariadb/slow.log. /dev/stderr is not usable here:
+## mysqld runs as your host user and cannot open the containers stderr.
+
+slow_query_log      = 1
+slow_query_log_file = /var/lib/mysql/slow.log
+long_query_time     = 1
+
+#################################################
+# fixes Error while sending QUERY packet for
+# indexer:reindex catalogsearch_fulltext see #6181
+
+wait_timeout           = 18000
+connect_timeout        = 18000
+delayed_insert_timeout = 18000
+max_allowed_packet     = 512M

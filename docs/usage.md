@@ -26,6 +26,9 @@ In case you are stug and you want to start fresh, stop your containers, remove `
     rm -rf mysql/
     magedev docker:start
 
+The database service runs mysql by default, [MariaDB](mariadb.md) can be used
+instead. Its data folder is named `mariadb` accordingly.
+
 # Mailcatcher
 
 Mailcatcher is preconfigured and can be accessed in your browser with:

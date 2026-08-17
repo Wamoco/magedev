@@ -54,10 +54,42 @@ class MysqlTest extends \TeamNeusta\Magedev\Test\TestCase
         );
     }
 
+    public function testGetConfigWithMariadb()
+    {
+        $input = m::mock('Symfony\Component\Console\Input\InputInterface');
+        $input->shouldReceive('getArgument')->andReturn(null);
+        $fileHelper = m::mock('\TeamNeusta\Magedev\Runtime\Helper\FileHelper');
+        $fileHelper->shouldReceive('findPath');
+        $fileHelper->shouldReceive('expandPath');
+        $fileHelper->shouldReceive('fileExists')->andReturn(true);
+        $fileHelper->shouldReceive('read')->andReturn('[]');
+
+        $imageFactory = m::mock(ImageFactory::class);
+        $config = new Config($input, $fileHelper);
+        $config->load();
+        $config->set('project_path', '/some/path/to/project');
+        $config->set('home_path', '/home/someuser');
+        $config->set('network_id', '582f685244a4');
+        $config->set('env_vars', ['MYSQL_USER' => 'root', 'USERID' => 1000]);
+        $config->set('db_engine', 'mariadb');
+
+        $nameBuilder = m::mock("\TeamNeusta\Magedev\Docker\Helper\NameBuilder");
+
+        $mysql = new Mysql($config, $imageFactory, $nameBuilder);
+        $containerConfig = $mysql->getConfig();
+        self::assertSame(
+            [
+                '/some/path/to/project/mariadb:/var/lib/mysql:rw',
+            ],
+            $containerConfig->getHostConfig()->getBinds()
+        );
+    }
+
     public function testGetImage()
     {
         $config = m::mock(Config::class);
         $config->shouldReceive('get')->with('env_vars')->andReturn([]);
+        $config->shouldReceive('optionExists')->with('db_engine')->andReturn(false);
         $fileHelper = m::mock(FileHelper::class);
         $contextBuilder = m::mock("Docker\Context\ContextBuilder[__destruct,add,run,from]");
         $contextBuilder->shouldReceive('__destruct');
@@ -72,6 +104,28 @@ class MysqlTest extends \TeamNeusta\Magedev\Test\TestCase
 
         $mysql = new Mysql($config, $imageFactory, $nameBuilder);
         self::assertSame(\TeamNeusta\Magedev\Docker\Image\Repository\Mysql::class, get_class($mysql->getImage()));
+    }
+
+    public function testGetImageWithMariadb()
+    {
+        $config = m::mock(Config::class);
+        $config->shouldReceive('get')->with('env_vars')->andReturn([]);
+        $config->shouldReceive('optionExists')->with('db_engine')->andReturn(true);
+        $config->shouldReceive('get')->with('db_engine')->andReturn('mariadb');
+        $fileHelper = m::mock(FileHelper::class);
+        $contextBuilder = m::mock("Docker\Context\ContextBuilder[__destruct,add,run,from]");
+        $contextBuilder->shouldReceive('__destruct');
+        $imageApiFactory = m::mock("\TeamNeusta\Magedev\Docker\Api\ImageFactory");
+        $nameBuilder = m::mock("\TeamNeusta\Magedev\Docker\Helper\NameBuilder");
+        $imageFactory = new ImageFactory(
+            $config,
+            $fileHelper,
+            $imageApiFactory,
+            $nameBuilder
+        );
+
+        $mysql = new Mysql($config, $imageFactory, $nameBuilder);
+        self::assertSame(\TeamNeusta\Magedev\Docker\Image\Repository\Mariadb::class, get_class($mysql->getImage()));
     }
 
     public function testGetName()
